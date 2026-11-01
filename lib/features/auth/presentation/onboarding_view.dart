@@ -44,7 +44,7 @@ class _OnboardingContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<OnboardingCubit>();
-    final theme = Theme.of(context);
+
 
     return BlocConsumer<OnboardingCubit, OnboardingState>(
       listenWhen: (previous, current) =>

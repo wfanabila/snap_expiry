@@ -15,29 +15,35 @@ class LoginView extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
-        if (state.errorMessage != null) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage!),
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
-        }
+  if (state.status == AuthStatus.success &&
+      state.user != null) {
+    context.go(AppConstants.homeRoute);
+    return;
+  }
 
-        if (state.infoMessage != null &&
-            state.user == null) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text(state.infoMessage!),
-                behavior: SnackBarBehavior.floating,
-              ),
-            );
-        }
-      },
+  if (state.errorMessage != null) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(state.errorMessage!),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+  }
+
+  if (state.infoMessage != null &&
+      state.user == null) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(state.infoMessage!),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+  }
+},
       builder: (context, state) {
         final cubit = context.read<AuthCubit>();
         final isLoading = state.status == AuthStatus.loading;
