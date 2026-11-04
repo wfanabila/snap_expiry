@@ -304,6 +304,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "14.8.1"
+  google_fonts:
+    dependency: "direct main"
+    description:
+      name: google_fonts
+      sha256: "517b20870220c48752eafa0ba1a797a092fb22df0d89535fd9991e86ee2cdd9c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.3.2"
+  google_identity_services_web:
+    dependency: transitive
+    description:
+      name: google_identity_services_web
+      sha256: "5d187c46dc59e02646e10fe82665fc3884a9b71bc1c90c2b8b749316d33ee454"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.3+1"
   google_mlkit_commons:
     dependency: transitive
     description:
@@ -320,6 +336,46 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.15.0"
+  google_sign_in:
+    dependency: "direct main"
+    description:
+      name: google_sign_in
+      sha256: "521031b65853b4409b8213c0387d57edaad7e2a949ce6dea0d8b2afc9cb29763"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.2.0"
+  google_sign_in_android:
+    dependency: transitive
+    description:
+      name: google_sign_in_android
+      sha256: "799165f4c0621ed233bccdded4c2e92739bc1fe73e970163b2f7493b301adad3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.2.1"
+  google_sign_in_ios:
+    dependency: transitive
+    description:
+      name: google_sign_in_ios
+      sha256: d9d80f953a244a099a40df1ff6aadc10ee375e6a098bbd5d55be332ce26db18c
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.2.1"
+  google_sign_in_platform_interface:
+    dependency: transitive
+    description:
+      name: google_sign_in_platform_interface
+      sha256: "7f59208c42b415a3cca203571128d6f84f885fead2d5b53eb65a9e27f2965bb5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
+  google_sign_in_web:
+    dependency: transitive
+    description:
+      name: google_sign_in_web
+      sha256: "2fc1f941e6443b2d6984f4056a727a3eaeab15d8ee99ba7125d79029be75a1da"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   http:
     dependency: "direct main"
     description:
@@ -464,6 +520,46 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.1.1"
+  local_auth:
+    dependency: "direct main"
+    description:
+      name: local_auth
+      sha256: "434d854cf478f17f12ab29a76a02b3067f86a63a6d6c4eb8fbfdcfe4879c1b7b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
+  local_auth_android:
+    dependency: transitive
+    description:
+      name: local_auth_android
+      sha256: "48924f4a8b3cc45994ad5993e2e232d3b00788a305c1bf1c7db32cef281ce9a3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.52"
+  local_auth_darwin:
+    dependency: transitive
+    description:
+      name: local_auth_darwin
+      sha256: "0e9706a8543a4a2eee60346294d6a633dd7c3ee60fae6b752570457c4ff32055"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.6.0"
+  local_auth_platform_interface:
+    dependency: transitive
+    description:
+      name: local_auth_platform_interface
+      sha256: f98b8e388588583d3f781f6806e4f4c9f9e189d898d27f0c249b93a1973dd122
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
+  local_auth_windows:
+    dependency: transitive
+    description:
+      name: local_auth_windows
+      sha256: bc4e66a29b0fdf751aafbec923b5bed7ad6ed3614875d8151afe2578520b2ab5
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.11"
   logging:
     dependency: transitive
     description:

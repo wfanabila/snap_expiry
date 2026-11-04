@@ -1,10 +1,10 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../auth/cubit/auth_cubit.dart';
+import '../../auth/cubit/auth_state.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -102,16 +102,82 @@ class ProfileView extends StatelessWidget {
                       onTap: () => _showEditProfile(context, name),
                     ),
                     const _SettingsDivider(),
+
                     _SettingsTile(
                       title: 'Change Password',
                       onTap: () => _showChangePassword(context),
                     ),
                     const _SettingsDivider(),
+
+                    // Biometric App Lock
+                    BlocBuilder<AuthCubit, AuthState>(
+                      builder: (context, state) {
+                        return SwitchListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 25,
+                            vertical: 10,
+                          ),
+                          activeColor: primaryColor,
+                          title: const Text(
+                            'Biometric App Lock',
+                            style: TextStyle(
+                              fontSize: 19,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black,
+                            ),
+                          ),
+                          subtitle: const Text(
+                            'Use fingerprint or face recognition to '
+                            'protect SnapExpiry.',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.black54,
+                            ),
+                          ),
+                          secondary: const Icon(
+                            Icons.fingerprint,
+                            color: primaryColor,
+                            size: 30,
+                          ),
+                          value: state.isBiometricLockEnabled,
+                          onChanged: state.isBiometricAuthenticating
+                              ? null
+                              : (enabled) async {
+                                  final cubit =
+                                      context.read<AuthCubit>();
+
+                                  final success = enabled
+                                      ? await cubit.enableBiometricLock()
+                                      : await cubit.disableBiometricLock();
+
+                                  if (!context.mounted) return;
+
+                                  final message = success
+                                      ? cubit.state.infoMessage ??
+                                          'Security setting updated.'
+                                      : cubit.state.errorMessage ??
+                                          'Unable to update security setting.';
+
+                                  ScaffoldMessenger.of(context)
+                                    ..hideCurrentSnackBar()
+                                    ..showSnackBar(
+                                      SnackBar(
+                                        content: Text(message),
+                                      ),
+                                    );
+                                },
+                        );
+                      },
+                    ),
+
+                    const _SettingsDivider(),
+
                     _SettingsTile(
                       title: 'About ExpiryTracker',
                       onTap: () => _showAbout(context),
                     ),
                     const _SettingsDivider(),
+
                     _SettingsTile(
                       title: 'FAQ',
                       onTap: () => _showFaq(context),

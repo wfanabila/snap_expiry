@@ -143,11 +143,18 @@ class _AddProductForm extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: const Text('Add Product'),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.black),
+              onPressed: () => Navigator.pop(context),
+            ),
+            backgroundColor: const Color(0xFFF4F6F0),
           ),
           body: SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Column(
+            child: Container(
+              color: const Color(0xFFF4F6F0),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // PHOTO AND BARCODE BUTTONS
@@ -175,7 +182,7 @@ class _AddProductForm extends StatelessWidget {
                           title: 'Scan Barcode',
                           subtitle: 'Auto-fill product details',
                           icon: Icons.document_scanner_outlined,
-                          backgroundColor: const Color(0xFF287D5B),
+                          backgroundColor: const Color(0xFF2E7D5B),
                           foregroundColor: Colors.white,
                           onTap: isProcessing || isSaving
                               ? null
@@ -232,8 +239,9 @@ class _AddProductForm extends StatelessWidget {
                   // PRODUCT INFORMATION
 
                   _SectionCard(
+                    backgroundColor: const Color(0xFFFFFFFF),
                     title: 'Product Information',
-                    child: Column(
+                    child: Column( 
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         TextField(
@@ -248,7 +256,11 @@ class _AddProductForm extends StatelessWidget {
                             prefixIcon: Icon(
                               Icons.inventory_2_outlined,
                             ),
-                            border: OutlineInputBorder(),
+                            filled: true,
+                            fillColor: Color(0xFFF4F6F0),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
                           ),
                         ),
 
@@ -261,7 +273,11 @@ class _AddProductForm extends StatelessWidget {
                             prefixIcon: Icon(
                               Icons.category_outlined,
                             ),
-                            border: OutlineInputBorder(),
+                            filled: true,
+                            fillColor: Color(0xFFF4F6F0),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
                           ),
                           items: _categories.map((category) {
                             return DropdownMenuItem<String>(
@@ -288,7 +304,11 @@ class _AddProductForm extends StatelessWidget {
                           decoration: const InputDecoration(
                             labelText: 'Quantity *',
                             prefixIcon: Icon(Icons.numbers),
-                            border: OutlineInputBorder(),
+                            filled: true,
+                            fillColor: Color(0xFFF4F6F0),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
                           ),
                         ),
 
@@ -304,7 +324,11 @@ class _AddProductForm extends StatelessWidget {
                             prefixIcon: Icon(
                               Icons.qr_code_scanner,
                             ),
-                            border: OutlineInputBorder(),
+                            filled: true,
+                            fillColor: Color(0xFFF4F6F0),
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide.none,
+                            ),
                           ),
                         ),
                       ],
@@ -316,6 +340,7 @@ class _AddProductForm extends StatelessWidget {
                   // TIMELINE AND DATES
 
                   _SectionCard(
+                    backgroundColor: const Color(0xFFFFFFFF),
                     title: 'Timeline & Dates',
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -326,11 +351,8 @@ class _AddProductForm extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
-                            color: Theme.of(context)
-                                .colorScheme
-                                .surfaceContainerHighest,
-                            borderRadius:
-                                BorderRadius.circular(12),
+                            color: const Color(0xFFF4F6F0),
+                            borderRadius: BorderRadius.circular(15),
                           ),
                           child: Text(
                             DateFormat('dd MMMM yyyy')
@@ -371,9 +393,13 @@ class _AddProductForm extends StatelessWidget {
                                   }
                                 },
                           icon: const Icon(
-                            Icons.calendar_month_outlined,
+                            Icons.calendar_month_outlined, color: Colors.black
                           ),
                           label: Text(
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
                             state.expiryDate == null
                                 ? 'Select expiry date'
                                 : 'Expiry date: ${DateFormat('dd MMM yyyy').format(state.expiryDate!)}',
@@ -387,24 +413,32 @@ class _AddProductForm extends StatelessWidget {
                           runSpacing: 8,
                           children: [
                             _DateSuggestion(
+                              backgroundColor: const Color(0xFFF4F6F0),
+                              foregroundColor: Colors.black,
                               label: '+3 Days',
                               days: 3,
                               onSelected: cubit.updateExpiryDate,
                             ),
                             _DateSuggestion(
+                              backgroundColor: const Color(0xFFF4F6F0),
+                              foregroundColor: Colors.black,
                               label: '+1 Week',
                               days: 7,
                               onSelected: cubit.updateExpiryDate,
                             ),
                             _DateSuggestion(
+                              backgroundColor: const Color(0xFFF4F6F0),
+                              foregroundColor: Colors.black,
                               label: '+2 Weeks',
                               days: 14,
                               onSelected: cubit.updateExpiryDate,
                             ),
                             _DateSuggestion(
+                              backgroundColor: const Color(0xFFF4F6F0),
+                              foregroundColor: Colors.black,
                               label: '+1 Month',
                               days: 30,
-                              onSelected: cubit.updateExpiryDate,
+                              onSelected: cubit.updateExpiryDate,              
                             ),
                           ],
                         ),
@@ -417,6 +451,7 @@ class _AddProductForm extends StatelessWidget {
                   // ADDITIONAL NOTES
 
                   _SectionCard(
+                    backgroundColor: const Color(0xFFFFFFFF),
                     title: 'Additional Notes',
                     child: TextFormField(
                       initialValue: state.notes,
@@ -427,10 +462,14 @@ class _AddProductForm extends StatelessWidget {
                       textCapitalization:
                           TextCapitalization.sentences,
                       decoration: const InputDecoration(
+                        filled: true,
+                        fillColor: Color(0xFFF4F6F0),
                         hintText:
                             'Add any useful product details...',
                         prefixIcon: Icon(Icons.notes),
-                        border: OutlineInputBorder(),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                        ),
                         alignLabelWithHint: true,
                       ),
                     ),
@@ -441,7 +480,7 @@ class _AddProductForm extends StatelessWidget {
                   // SAVE PRODUCT
 
                   SizedBox(
-                    height: 58,
+                    height: 49,
                     child: FilledButton.icon(
                       onPressed: isSaving || isProcessing
                           ? null
@@ -449,7 +488,7 @@ class _AddProductForm extends StatelessWidget {
                       icon: isSaving
                           ? const SizedBox(
                               width: 18,
-                              height: 18,
+                              height: 10,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
                               ),
@@ -462,7 +501,7 @@ class _AddProductForm extends StatelessWidget {
                       ),
                       style: FilledButton.styleFrom(
                         backgroundColor:
-                            const Color(0xFF287D5B),
+                            const Color(0xFF2E7D5B),
                         foregroundColor: Colors.white,
                       ),
                     ),
@@ -470,6 +509,7 @@ class _AddProductForm extends StatelessWidget {
 
                   const SizedBox(height: 16),
                 ],
+                ),
               ),
             ),
           ),
@@ -556,16 +596,18 @@ class _SectionCard extends StatelessWidget {
   const _SectionCard({
     required this.title,
     required this.child,
+    this.backgroundColor,
   });
 
   final String title;
   final Widget child;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
-      color: Theme.of(context).colorScheme.surface,
+      color: backgroundColor ?? Theme.of(context).colorScheme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
@@ -601,16 +643,26 @@ class _DateSuggestion extends StatelessWidget {
     required this.label,
     required this.days,
     required this.onSelected,
+    this.backgroundColor,
+    this.foregroundColor,
+    this.borderColor = Colors.transparent,
   });
 
   final String label;
   final int days;
   final ValueChanged<DateTime> onSelected;
+  final Color? backgroundColor;
+  final Color? foregroundColor;
+  final Color borderColor; 
 
   @override
   Widget build(BuildContext context) {
     return ActionChip(
       label: Text(label),
+      backgroundColor: backgroundColor,
+      labelStyle: foregroundColor == null
+          ? null
+          : TextStyle(color: foregroundColor),
       onPressed: () {
         final expiryDate = DateTime.now().add(
           Duration(days: days),

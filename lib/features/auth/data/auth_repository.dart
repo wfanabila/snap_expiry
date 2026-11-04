@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../../core/utils/app_exceptions.dart';
 
@@ -9,10 +10,58 @@ class AuthRepository {
 
   final FirebaseAuth _firebaseAuth;
 
+  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
+  bool _googleInitialized = false;
+
   User? get currentUser => _firebaseAuth.currentUser;
 
   Stream<User?> get authStateChanges =>
       _firebaseAuth.authStateChanges();
+
+  Future<void> _initializeGoogleSignIn() async {
+    if (_googleInitialized) return;
+
+    await _googleSignIn.initialize();
+    _googleInitialized = true;
+  }
+
+  Future<UserCredential> signInWithGoogle() async {
+    try {
+      await _initializeGoogleSignIn();
+
+      final GoogleSignInAccount googleUser =
+          await _googleSignIn.authenticate();
+
+      final GoogleSignInAuthentication googleAuth =
+          googleUser.authentication;
+
+      final String? idToken = googleAuth.idToken;
+
+      if (idToken == null) {
+        throw const AppException(
+          'Google sign-in could not retrieve an authentication token.',
+        );
+      }
+
+      final OAuthCredential credential =
+          GoogleAuthProvider.credential(
+        idToken: idToken,
+      );
+
+      return await _firebaseAuth.signInWithCredential(credential);
+    } on AppException {
+      rethrow;
+    } on FirebaseAuthException catch (error) {
+      throw AppException(
+        _messageFor(error),
+        code: error.code,
+      );
+    } catch (_) {
+      throw const AppException(
+        'Google sign-in was unsuccessful. Please try again.',
+      );
+    }
+  }
 
   Future<UserCredential> signUp({
     required String name,
@@ -27,7 +76,6 @@ class AuthRepository {
       );
 
       await credential.user?.updateDisplayName(name.trim());
-
       await credential.user?.reload();
 
       return credential;
@@ -85,6 +133,10 @@ class AuthRepository {
 
   Future<void> signOut() async {
     try {
+      if (_googleInitialized) {
+        await _googleSignIn.signOut();
+      }
+
       await _firebaseAuth.signOut();
     } on FirebaseAuthException catch (error) {
       throw AppException(
@@ -184,7 +236,7 @@ class AuthRepository {
         return 'Please log in again before performing this action.';
 
       case 'operation-not-allowed':
-        return 'Email and password sign-in is not enabled in Firebase.';
+        return 'This sign-in method is not enabled in Firebase.';
 
       default:
         return 'Something went wrong. Please try again.';

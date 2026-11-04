@@ -1,8 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
-
 import '../cubit/products_cubit.dart';
 import '../cubit/products_state.dart';
 import '../data/product_repository.dart';
@@ -28,10 +28,22 @@ class _HomeContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF4F6F0),
       appBar: AppBar(
-        title: const Text('SnapExpiry'),
+        backgroundColor: const Color(0xFFF4F6F0),
+        shape: const Border(
+          bottom: BorderSide(color: Color(0xFFE9E9E9), width: 1.5),
+        ),
+        title: Text('Hello, ${FirebaseAuth.instance.currentUser?.displayName ?? 'there'}!',
+          style: TextStyle(
+            color: Color(0xFF000000),
+            fontFamily: 'Inter',
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+          )
+        ),
+        
       ),
-
       body: BlocBuilder<ProductsCubit, ProductsState>(
         builder: (context, state) {
           final cubit = context.read<ProductsCubit>();
@@ -94,17 +106,6 @@ class _HomeContent extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                Text(
-                  'Your products',
-                  style: Theme.of(context).textTheme.headlineSmall,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Keep track of expiry dates and reduce waste.',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                const SizedBox(height: 20),
-
                 Row(
                   children: [
                     Expanded(

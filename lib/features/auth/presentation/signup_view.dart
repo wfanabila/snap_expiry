@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -24,6 +25,11 @@ class SignupView extends StatelessWidget {
                 behavior: SnackBarBehavior.floating,
               ),
             );
+        }
+
+        if (state.status == AuthStatus.success &&
+            state.user != null) {
+          context.go(AppConstants.homeRoute);
         }
       },
       builder: (context, state) {
@@ -66,6 +72,8 @@ class SignupView extends StatelessWidget {
                               .bodyMedium,
                         ),
                         const SizedBox(height: 28),
+
+                        // Full name
                         AppTextField(
                           label: 'Full name',
                           controller: cubit.signupNameController,
@@ -76,7 +84,10 @@ class SignupView extends StatelessWidget {
                           enabled: !isLoading,
                           validator: cubit.validateName,
                         ),
+
                         const SizedBox(height: 16),
+
+                        // Email address
                         AppTextField(
                           label: 'Email address',
                           controller: cubit.signupEmailController,
@@ -88,7 +99,10 @@ class SignupView extends StatelessWidget {
                           enabled: !isLoading,
                           validator: cubit.validateEmail,
                         ),
+
                         const SizedBox(height: 16),
+
+                        // Password field
                         AppTextField(
                           label: 'Password',
                           controller:
@@ -98,7 +112,8 @@ class SignupView extends StatelessWidget {
                                 ?.validate();
                           },
                           prefixIcon: Icons.lock_outline,
-                          obscureText: !state.isPasswordVisible,
+                          obscureText:
+                              !state.isPasswordVisible,
                           enabled: !isLoading,
                           textInputAction: TextInputAction.next,
                           validator: cubit.validatePassword,
@@ -116,7 +131,10 @@ class SignupView extends StatelessWidget {
                             ),
                           ),
                         ),
+
                         const SizedBox(height: 16),
+
+                        // Confirm password field
                         AppTextField(
                           label: 'Confirm password',
                           controller:
@@ -145,17 +163,23 @@ class SignupView extends StatelessWidget {
                             ),
                           ),
                         ),
+
                         const SizedBox(height: 24),
+
+                        // Create account button
                         AppButton(
                           label: 'Create account',
                           isLoading: isLoading,
-                          onPressed: isLoading
-                              ? null
-                              : cubit.signUp,
+                          onPressed:
+                              isLoading ? null : cubit.signUp,
                         ),
+
                         const SizedBox(height: 16),
+
+                        // Navigate to login
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment:
+                              MainAxisAlignment.center,
                           children: [
                             const Flexible(
                               child: Text(

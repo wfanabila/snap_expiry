@@ -7,6 +7,7 @@ import '../../features/products/presentation/home_view.dart';
 import '../../features/products/presentation/add_product_view.dart';
 import '../../features/products/presentation/product_details_view.dart';
 import '../../features/profile/presentation/profile_view.dart';
+import '../../features/auth/presentation/forgot_password_view.dart';
 
 class AppRouter {
   AppRouter._();
@@ -38,7 +39,10 @@ class AppRouter {
         path: '/add-product',
         builder: (context, state) => const AddProductView(),
       ),
-
+      GoRoute(
+        path: '/forgot-password',
+        builder: (context, state) => const ForgotPasswordView(),
+      ),
       GoRoute(
         path: '/product/:id',
         builder: (context, state) {
