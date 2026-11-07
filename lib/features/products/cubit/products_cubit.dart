@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/utils/app_exceptions.dart';
 import '../data/product_repository.dart';
+import '../domain/product.dart';
 import 'products_state.dart';
 
 class ProductsCubit extends Cubit<ProductsState> {
@@ -70,10 +71,53 @@ class ProductsCubit extends Cubit<ProductsState> {
     );
   }
 
+  void changeFilter(ProductFilter filter) {
+    emit(
+      state.copyWith(
+        selectedFilter: filter,
+        clearError: true,
+      ),
+    );
+  }
+
+  Future<void> deleteProduct(Product product) async {
+    final originalProducts = state.products;
+
+    try {
+      await _repository.deleteProduct(product.id);
+
+      if (isClosed) return;
+
+      // Update the UI immediately after successful deletion.
+      final updatedProducts = originalProducts
+          .where((item) => item.id != product.id)
+          .toList(growable: false);
+
+      emit(
+        state.copyWith(
+          status: ProductsStatus.success,
+          products: updatedProducts,
+          clearError: true,
+        ),
+      );
+    } catch (error) {
+      if (isClosed) return;
+
+      // Restore the product if deletion fails.
+      emit(
+        state.copyWith(
+          status: ProductsStatus.failure,
+          products: originalProducts,
+          errorMessage: _errorMessage(error),
+        ),
+      );
+    }
+  }
+
   String _errorMessage(Object error) {
     if (error is AppException) return error.message;
 
-    return 'Unable to load products. Please try again.';
+    return 'Unable to manage products. Please try again.';
   }
 
   @override

@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-
+import '../../../core/widgets/app_bottom_nav.dart';
 import '../cubit/add_product_cubit.dart';
 import '../cubit/add_product_state.dart';
 import '../data/product_repository.dart';
@@ -142,10 +142,19 @@ class _AddProductForm extends StatelessWidget {
 
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Add Product'),
+            elevation: 0,
+            centerTitle: true,
+            title: const Text(
+              'Add Product',
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
             leading: IconButton(
               icon: const Icon(Icons.arrow_back, color: Colors.black),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => context.go('/home'),
             ),
             backgroundColor: const Color(0xFFF4F6F0),
           ),
@@ -513,6 +522,7 @@ class _AddProductForm extends StatelessWidget {
               ),
             ),
           ),
+          bottomNavigationBar: const AppBottomNav(currentIndex: 0),
         );
       },
     );

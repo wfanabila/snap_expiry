@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
-
+import '../../../core/widgets/app_bottom_nav.dart';
 import '../../../core/utils/date_utils.dart';
 import '../cubit/product_details_cubit.dart';
 import '../cubit/product_details_state.dart';
@@ -64,13 +64,30 @@ class _ProductDetailsContent extends StatelessWidget {
         final product = state.product;
 
         return Scaffold(
+          backgroundColor: const Color(0xFFF4F6F0),
           appBar: AppBar(
-            title: const Text('Product Details'),
+            elevation: 0,
+            centerTitle: true,
+            title: const Text(
+              'Product Details',
+              style: TextStyle(
+                fontSize: 25,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back, color: Colors.black),
+              onPressed: () => context.go('/home'),
+            ),
+            backgroundColor: const Color(0xFFF4F6F0),
             actions: [
               if (product != null)
                 IconButton(
                   tooltip: 'Delete product',
                   icon: const Icon(Icons.delete_outline),
+                  iconSize: 28,
+                  color: Colors.black,
                   onPressed: state.status == ProductDetailsStatus.loading
                       ? null
                       : () => _confirmDelete(context),
@@ -78,6 +95,7 @@ class _ProductDetailsContent extends StatelessWidget {
             ],
           ),
           body: _buildBody(context, state, product),
+          bottomNavigationBar: const AppBottomNav(currentIndex: 0),
         );
       },
     );
@@ -144,16 +162,13 @@ class _ProductDetailsContent extends StatelessWidget {
                 width: 100,
                 height: 100,
                 decoration: BoxDecoration(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .primary
-                      .withValues(alpha: 0.1),
+                  color: const Color(0xFFF4F6F0),
                   borderRadius: BorderRadius.circular(24),
                 ),
                 child: Icon(
                   Icons.inventory_2_outlined,
                   size: 52,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: const Color(0xFF2E7D5B),
                 ),
               ),
             ),

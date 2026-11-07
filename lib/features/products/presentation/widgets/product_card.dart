@@ -43,6 +43,7 @@ class ProductCard extends StatelessWidget {
     }
 
     return Card(
+      color: const Color(0xFFFFFFFF),
       margin: const EdgeInsets.only(bottom: 12),
       child: InkWell(
         onTap: onTap,

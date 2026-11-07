@@ -24,11 +24,15 @@ class ProfileView extends StatelessWidget {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () => context.go('/home'),
+        ),
         backgroundColor: backgroundColor,
         elevation: 0,
         centerTitle: true,
         title: const Text(
-          'Profile & Settings',
+          'Profile',
           style: TextStyle(
             fontSize: 25,
             fontWeight: FontWeight.bold,
@@ -191,23 +195,24 @@ class ProfileView extends StatelessWidget {
               // Log out button
               SizedBox(
                 width: double.infinity,
-                height: 65,
+                height: 50,
                 child: OutlinedButton(
                   onPressed: () => _confirmLogout(context),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.red,
+                    backgroundColor: Colors.white,
                     side: const BorderSide(
                       color: Colors.red,
                       width: 1.5,
                     ),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
+                      borderRadius: BorderRadius.circular(15),
                     ),
                   ),
                   child: const Text(
                     'Log Out',
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -221,37 +226,48 @@ class ProfileView extends StatelessWidget {
       // Bottom navigation bar
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
-          color: backgroundColor,
           border: Border(
-            top: BorderSide(color: Color(0xFFE5E5E5)),
+            top: BorderSide(color: Color(0xFFE9E9E9), width: 1),
           ),
         ),
-        child: SafeArea(
-          child: SizedBox(
-            height: 72,
-            child: Row(
-              children: [
-                _BottomNavItem(
-                  icon: Icons.inventory_2_outlined,
-                  label: 'Items',
-                  onTap: () => context.go('/home'),
-                ),
-                _BottomNavItem(
-                  icon: Icons.add_circle_outline,
-                  label: 'Add',
-                  onTap: () => context.push('/add-product'),
-                ),
-                _BottomNavItem(
-                  icon: Icons.person_outline,
-                  label: 'Profile',
-                  selected: true,
-                  onTap: () {},
-                ),
-              ],
+        child: BottomNavigationBar(
+          backgroundColor: const Color(0xFFF4F6F0),
+          currentIndex: 0,
+          type: BottomNavigationBarType.fixed,
+          selectedItemColor: Color(0xFF2E7D5B),
+          unselectedItemColor: Colors.grey,
+          onTap: (index) {
+            switch (index) {
+              case 0:
+                context.go('/home');
+                break;
+              case 1:
+                context.go('/add-product');
+                break;
+              case 2:
+                context.go('/profile');
+                break;
+            }
+          },
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              activeIcon: Icon(Icons.home),
+              label: 'Home',
             ),
-          ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.add_circle_outline),
+              activeIcon: Icon(Icons.add_circle),
+              label: 'Add',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline),
+              activeIcon: Icon(Icons.person),
+              label: 'Profile',
+            ),
+          ],
         ),
-      ),
+      )
     );
   }
 
