@@ -1,4 +1,4 @@
-
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -24,11 +24,9 @@ class AddProductCubit extends Cubit<AddProductState> {
   final ImagePicker _imagePicker = ImagePicker();
 
   // Controllers keep automatically detected values visible in the form.
-  final TextEditingController nameController =
-      TextEditingController();
+  final TextEditingController nameController = TextEditingController();
 
-  final TextEditingController barcodeController =
-      TextEditingController();
+  final TextEditingController barcodeController = TextEditingController();
 
   // ---------------------------------------------------------
   // MANUAL FORM UPDATES
@@ -139,8 +137,7 @@ class AddProductCubit extends Cubit<AddProductState> {
         processingMessage: 'Preparing image...',
       ));
 
-      final CroppedFile? croppedImage =
-          await ImageCropper().cropImage(
+      final CroppedFile? croppedImage = await ImageCropper().cropImage(
         sourcePath: selectedImage.path,
         uiSettings: [
           AndroidUiSettings(
@@ -177,8 +174,7 @@ class AddProductCubit extends Cubit<AddProductState> {
       );
 
       try {
-        final recognizedText =
-            await textRecognizer.processImage(inputImage);
+        final recognizedText = await textRecognizer.processImage(inputImage);
 
         final extractedName = _extractProductName(
           recognizedText.text,
@@ -195,13 +191,13 @@ class AddProductCubit extends Cubit<AddProductState> {
         emit(state.copyWith(
           expiryDate: extractedExpiryDate,
           isProcessing: false,
-          processingMessage: extractedName != null ||
-                  extractedExpiryDate != null
-              ? 'Label recognised. Please verify the details.'
-              : 'Text was read, but product details were not detected.',
+          processingMessage:
+              extractedName != null || extractedExpiryDate != null
+                  ? 'Label recognised. Please verify the details.'
+                  : 'Text was read, but product details were not detected.',
           clearError: true,
-          clearProcessingMessage: extractedName == null &&
-              extractedExpiryDate == null,
+          clearProcessingMessage:
+              extractedName == null && extractedExpiryDate == null,
         ));
       } finally {
         await textRecognizer.close();
@@ -352,9 +348,7 @@ class AddProductCubit extends Cubit<AddProductState> {
 
     final date = DateTime(year, month, day);
 
-    if (date.year != year ||
-        date.month != month ||
-        date.day != day) {
+    if (date.year != year || date.month != month || date.day != day) {
       return null;
     }
 
@@ -399,8 +393,7 @@ class AddProductCubit extends Cubit<AddProductState> {
         throw Exception('Product database unavailable.');
       }
 
-      final data = jsonDecode(response.body)
-          as Map<String, dynamic>;
+      final data = jsonDecode(response.body) as Map<String, dynamic>;
 
       if (data['status'] != 1 || data['product'] == null) {
         emit(state.copyWith(
@@ -414,8 +407,7 @@ class AddProductCubit extends Cubit<AddProductState> {
 
       final product = data['product'] as Map<String, dynamic>;
 
-      final productName =
-          product['product_name']?.toString().trim() ?? '';
+      final productName = product['product_name']?.toString().trim() ?? '';
 
       final category = _mapCategory(
         product['categories']?.toString() ?? '',
@@ -449,8 +441,7 @@ class AddProductCubit extends Cubit<AddProductState> {
 
     if (value.contains('dairy')) return 'Dairy';
 
-    if (value.contains('beverage') ||
-        value.contains('drink')) {
+    if (value.contains('beverage') || value.contains('drink')) {
       return 'Beverages';
     }
 
@@ -464,8 +455,11 @@ class AddProductCubit extends Cubit<AddProductState> {
   // ---------------------------------------------------------
 
   Future<void> addProduct() async {
-    if (state.status == AddProductStatus.loading ||
-        state.isProcessing) {
+    debugPrint('1. addProduct called');
+
+    if (state.status == AddProductStatus.loading || state.isProcessing) {
+      debugPrint('1b. blocked: status=${state.status}, '
+          'processing=${state.isProcessing}');
       return;
     }
 
@@ -479,9 +473,7 @@ class AddProductCubit extends Cubit<AddProductState> {
     }
 
     if (quantity == null || quantity < 1) {
-      _fail(
-        'Quantity must be a whole number greater than zero.',
-      );
+      _fail('Quantity must be a whole number greater than zero.');
       return;
     }
 
@@ -516,14 +508,31 @@ class AddProductCubit extends Cubit<AddProductState> {
         updatedAt: now,
       );
 
-      await _repository.addProduct(product);
+      debugPrint('2. before repository');
+
+      await _repository
+          .addProduct(product)
+          .timeout(const Duration(seconds: 8));
+
+      debugPrint('3. after repository');
 
       emit(state.copyWith(
         status: AddProductStatus.success,
         successMessage: 'Product added successfully.',
         clearError: true,
       ));
+    } on TimeoutException {
+      // Firestore saved it locally but the server has not confirmed yet.
+      debugPrint('3b. timeout: saved locally, will sync when online');
+
+      emit(state.copyWith(
+        status: AddProductStatus.success,
+        successMessage: 'Product saved. It will sync when you are online.',
+        clearError: true,
+      ));
     } catch (error) {
+      debugPrint('ERROR saving product: $error');
+
       final message = error is AppException
           ? error.message
           : 'Unable to save the product. Please try again.';

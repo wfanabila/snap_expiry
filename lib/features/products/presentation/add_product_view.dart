@@ -1,4 +1,6 @@
 
+// ignore_for_file: unused_element_parameter
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -123,12 +125,13 @@ class _AddProductForm extends StatelessWidget {
             ),
           );
 
-          context.pop();
+          context.go('/home');
         } else if (state.status == AddProductStatus.failure &&
             state.errorMessage != null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(state.errorMessage!),
+              backgroundColor: Colors.red,
             ),
           );
         }
@@ -137,8 +140,7 @@ class _AddProductForm extends StatelessWidget {
         final cubit = context.read<AddProductCubit>();
 
         final isProcessing = state.isProcessing;
-        final isSaving =
-            state.status == AddProductStatus.loading;
+        final isSaving = state.status == AddProductStatus.loading;
 
         return Scaffold(
           appBar: AppBar(
@@ -242,50 +244,66 @@ class _AddProductForm extends StatelessWidget {
                       ),
                     ),
                   ],
-
                   const SizedBox(height: 24),
 
                   // PRODUCT INFORMATION
-
                   _SectionCard(
                     backgroundColor: const Color(0xFFFFFFFF),
                     title: 'Product Information',
-                    child: Column( 
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        const _FieldLabel(label: 'Product Name *'),
+                        const SizedBox(height: 8),
                         TextField(
                           controller: cubit.nameController,
                           enabled: !isSaving && !isProcessing,
                           onChanged: cubit.updateName,
-                          textCapitalization:
-                              TextCapitalization.sentences,
+                          textCapitalization: TextCapitalization.sentences,
                           decoration: const InputDecoration(
-                            labelText: 'Product Name *',
                             hintText: 'e.g. Fresh milk',
-                            prefixIcon: Icon(
-                              Icons.inventory_2_outlined,
-                            ),
+                            prefixIcon: Icon(Icons.inventory_2_outlined),
                             filled: true,
                             fillColor: Color(0xFFF4F6F0),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide.none,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(15)),
+                              borderSide: BorderSide(
+                                color: Color(0xFFE9E9E9),
+                                width: 1.5,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(15)),
+                              borderSide: BorderSide(
+                                color: Color(0xFFE9E9E9),
+                                width: 1.5,
+                              ),
                             ),
                           ),
                         ),
-
                         const SizedBox(height: 16),
-
+                        const _FieldLabel(label: 'Category'),
+                        const SizedBox(height: 8),
+                        
                         DropdownButtonFormField<String>(
                           value: state.category,
                           decoration: const InputDecoration(
-                            labelText: 'Category',
-                            prefixIcon: Icon(
-                              Icons.category_outlined,
-                            ),
+                            prefixIcon: Icon(Icons.category_outlined),
                             filled: true,
                             fillColor: Color(0xFFF4F6F0),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide.none,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(15)),
+                              borderSide: BorderSide(
+                                color: Color(0xFFE9E9E9),
+                                width: 1.5,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(15)),
+                              borderSide: BorderSide(
+                                color: Color(0xFFE9E9E9),
+                                width: 1.5,
+                              ),
                             ),
                           ),
                           items: _categories.map((category) {
@@ -294,16 +312,16 @@ class _AddProductForm extends StatelessWidget {
                               child: Text(category),
                             );
                           }).toList(),
-                          onChanged: isSaving || isProcessing
-                              ? null
-                              : (value) {
-                                  if (value != null) {
-                                    cubit.updateCategory(value);
-                                  }
-                                },
+                          onChanged: isSaving || isProcessing ? null : (value) {
+                            if (value != null) {
+                              cubit.updateCategory(value);
+                            }
+                          },
                         ),
-
+                      
                         const SizedBox(height: 16),
+                        const _FieldLabel(label: 'Quantity *'),
+                        const SizedBox(height: 8),
 
                         TextFormField(
                           initialValue: state.quantity,
@@ -311,17 +329,31 @@ class _AddProductForm extends StatelessWidget {
                           onChanged: cubit.updateQuantity,
                           keyboardType: TextInputType.number,
                           decoration: const InputDecoration(
-                            labelText: 'Quantity *',
+                            hintText: 'Enter quantity',
                             prefixIcon: Icon(Icons.numbers),
                             filled: true,
                             fillColor: Color(0xFFF4F6F0),
-                            border: OutlineInputBorder(
-                              borderSide: BorderSide.none,
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(15)),
+                              borderSide: BorderSide(
+                                color: Color(0xFFE9E9E9),
+                                width: 1.5,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(15)),
+                              borderSide: BorderSide(
+                                color: Color(0xFFE9E9E9),
+                                width: 1.5,
+                              ),
                             ),
                           ),
                         ),
-
                         const SizedBox(height: 16),
+
+                        // BARCODE
+                        const _FieldLabel(label: 'Barcode (optional)'),
+                        const SizedBox(height: 8),
 
                         TextField(
                           controller: cubit.barcodeController,
@@ -329,10 +361,8 @@ class _AddProductForm extends StatelessWidget {
                           onChanged: cubit.updateBarcode,
                           keyboardType: TextInputType.number,
                           decoration: const InputDecoration(
-                            labelText: 'Barcode (optional)',
-                            prefixIcon: Icon(
-                              Icons.qr_code_scanner,
-                            ),
+                            hintText: 'Enter barcode',
+                            prefixIcon: Icon(Icons.qr_code_scanner),
                             filled: true,
                             fillColor: Color(0xFFF4F6F0),
                             border: OutlineInputBorder(
@@ -340,14 +370,12 @@ class _AddProductForm extends StatelessWidget {
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ]
+                    )
                   ),
-
                   const SizedBox(height: 16),
 
                   // TIMELINE AND DATES
-
                   _SectionCard(
                     backgroundColor: const Color(0xFFFFFFFF),
                     title: 'Timeline & Dates',
@@ -362,6 +390,10 @@ class _AddProductForm extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: const Color(0xFFF4F6F0),
                             borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                              color: const Color(0xFFE9E9E9),
+                              width: 1.5,
+                            ),
                           ),
                           child: Text(
                             DateFormat('dd MMMM yyyy')
@@ -370,11 +402,20 @@ class _AddProductForm extends StatelessWidget {
                         ),
 
                         const SizedBox(height: 16),
-
                         const Text('Expiration Date *'),
                         const SizedBox(height: 8),
 
                         OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15),
+                            ),
+                            side: const BorderSide(
+                              color: Color(0xFFE9E9E9),
+                              width: 1.5,
+                            ),
+                            backgroundColor: const Color(0xFFF4F6F0),
+                          ),
                           onPressed: isSaving || isProcessing
                               ? null
                               : () async {
@@ -476,10 +517,21 @@ class _AddProductForm extends StatelessWidget {
                         hintText:
                             'Add any useful product details...',
                         prefixIcon: Icon(Icons.notes),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                        ),
                         alignLabelWithHint: true,
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(15)),
+                          borderSide: BorderSide(
+                            color: Color(0xFFE9E9E9),
+                            width: 1.5,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(15)),
+                          borderSide: BorderSide(
+                            color: Color(0xFFE9E9E9),
+                            width: 1.5,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -500,6 +552,7 @@ class _AddProductForm extends StatelessWidget {
                               height: 10,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
+                                color: Colors.white,
                               ),
                             )
                           : const Icon(Icons.save_outlined),
@@ -522,7 +575,7 @@ class _AddProductForm extends StatelessWidget {
               ),
             ),
           ),
-          bottomNavigationBar: const AppBottomNav(currentIndex: 0),
+          bottomNavigationBar: const AppBottomNav(currentIndex: 1),
         );
       },
     );
@@ -655,7 +708,7 @@ class _DateSuggestion extends StatelessWidget {
     required this.onSelected,
     this.backgroundColor,
     this.foregroundColor,
-    this.borderColor = Colors.transparent,
+    this.borderColor = const Color(0xFFE9E9E9),
   });
 
   final String label;
@@ -680,6 +733,27 @@ class _DateSuggestion extends StatelessWidget {
 
         onSelected(expiryDate);
       },
+    );
+  }
+}
+
+
+class _FieldLabel extends StatelessWidget {
+  const _FieldLabel({
+    required this.label,
+  });
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      label,
+      style: const TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: Color(0xFF2E7D5B),
+      ),
     );
   }
 }

@@ -33,6 +33,9 @@ class _HomeContent extends StatelessWidget {
       backgroundColor: const Color(0xFFF4F6F0),
       appBar: AppBar(
         backgroundColor: const Color(0xFFF4F6F0),
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        scrolledUnderElevation: 0,
         shape: const Border(
           bottom: BorderSide(
             color: Color(0xFFE9E9E9),
@@ -390,7 +393,6 @@ class _CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Theme.of(context).colorScheme.primary;
 
     return SizedBox(
       width: double.infinity,

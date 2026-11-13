@@ -1,5 +1,5 @@
 import 'package:go_router/go_router.dart';
-
+import '../../features/products/presentation/edit_product_view.dart';
 import '../../features/auth/presentation/onboarding_view.dart';
 import '../../features/auth/presentation/login_view.dart';
 import '../../features/auth/presentation/signup_view.dart';
@@ -49,6 +49,13 @@ class AppRouter {
           final productId = state.pathParameters['id']!;
 
           return ProductDetailsView(productId: productId);
+        },
+      ),
+      GoRoute(
+        path: '/edit-product/:productId',
+        builder: (context, state) {
+          final productId = state.pathParameters['productId']!;
+          return EditProductView(productId: productId);
         },
       ),
     ],

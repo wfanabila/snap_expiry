@@ -2,9 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-
+import '../../../core/widgets/app_bottom_nav.dart';
 import '../../auth/cubit/auth_cubit.dart';
 import '../../auth/cubit/auth_state.dart';
+import 'widgets/edit_profile_dialog.dart';
+import 'widgets/change_password_dialog.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -22,7 +24,7 @@ class ProfileView extends StatelessWidget {
         (email.contains('@') ? email.split('@').first : 'SnapExpiry User');
 
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: const Color(0xFFF4F6F0),
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
@@ -103,13 +105,25 @@ class ProfileView extends StatelessWidget {
                   children: [
                     _SettingsTile(
                       title: 'Edit Profile',
-                      onTap: () => _showEditProfile(context, name),
+                      onTap: () {
+                        showDialog<bool>(
+                          context: context,
+                          builder: (_) => EditProfileDialog(
+                            currentName: name,
+                          ),
+                        );
+                      },
                     ),
                     const _SettingsDivider(),
 
                     _SettingsTile(
                       title: 'Change Password',
-                      onTap: () => _showChangePassword(context),
+                      onTap: () {
+                        showDialog<bool>(
+                          context: context,
+                          builder: (_) => const ChangePasswordDialog(),
+                        );
+                      },
                     ),
                     const _SettingsDivider(),
 
@@ -222,52 +236,8 @@ class ProfileView extends StatelessWidget {
           ),
         ),
       ),
-
       // Bottom navigation bar
-      bottomNavigationBar: Container(
-        decoration: const BoxDecoration(
-          border: Border(
-            top: BorderSide(color: Color(0xFFE9E9E9), width: 1),
-          ),
-        ),
-        child: BottomNavigationBar(
-          backgroundColor: const Color(0xFFF4F6F0),
-          currentIndex: 0,
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: Color(0xFF2E7D5B),
-          unselectedItemColor: Colors.grey,
-          onTap: (index) {
-            switch (index) {
-              case 0:
-                context.go('/home');
-                break;
-              case 1:
-                context.go('/add-product');
-                break;
-              case 2:
-                context.go('/profile');
-                break;
-            }
-          },
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.add_circle_outline),
-              activeIcon: Icon(Icons.add_circle),
-              label: 'Add',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              activeIcon: Icon(Icons.person),
-              label: 'Profile',
-            ),
-          ],
-        ),
-      )
+      bottomNavigationBar: const AppBottomNav(currentIndex: 2),
     );
   }
 
@@ -482,49 +452,6 @@ class _SettingsDivider extends StatelessWidget {
       indent: 25,
       endIndent: 25,
       color: Color(0xFFD6D6D6),
-    );
-  }
-}
-
-// Reusable bottom navigation item
-class _BottomNavItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _BottomNavItem({
-    required this.icon,
-    required this.label,
-    required this.onTap,
-    this.selected = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 30,
-              color: selected ? const Color(0xFF4B7655) : Colors.black87,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: selected ? FontWeight.bold : FontWeight.normal,
-                color: selected ? const Color(0xFF4B7655) : Colors.black,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

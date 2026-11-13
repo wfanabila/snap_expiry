@@ -197,16 +197,19 @@ class _ProductDetailsContent extends StatelessWidget {
               icon: Icons.category_outlined,
               label: 'Category',
               value: product.category,
+              color: const Color(0xFF2E7D5B),
             ),
             _DetailRow(
               icon: Icons.numbers,
               label: 'Quantity',
               value: product.quantity.toString(),
+              color: const Color(0xFF2E7D5B),
             ),
             _DetailRow(
               icon: Icons.event_outlined,
               label: 'Expiry date',
               value: ExpiryDateUtils.formatDate(product.expiryDate),
+              color: const Color(0xFF2E7D5B),
             ),
             _DetailRow(
               icon: Icons.qr_code,
@@ -214,6 +217,7 @@ class _ProductDetailsContent extends StatelessWidget {
               value: product.barcode?.isNotEmpty == true
                   ? product.barcode!
                   : 'Not provided',
+              color: const Color(0xFF2E7D5B),
             ),
             _DetailRow(
               icon: Icons.notes_outlined,
@@ -221,18 +225,33 @@ class _ProductDetailsContent extends StatelessWidget {
               value: product.notes?.isNotEmpty == true
                   ? product.notes!
                   : 'No notes',
+              color: const Color(0xFF2E7D5B),
             ),
             _DetailRow(
               icon: Icons.access_time,
               label: 'Last updated',
               value: DateFormat('dd MMM yyyy, hh:mm a')
                   .format(product.updatedAt),
+              color: const Color(0xFF2E7D5B),
             ),
             const SizedBox(height: 28),
             FilledButton.icon(
+              style: FilledButton.styleFrom(
+                backgroundColor: const Color(0xFF2E7D5B),
+              ),
               onPressed: state.status == ProductDetailsStatus.loading
                   ? null
-                  : () => _showEditDialog(context, product),
+                  : () async {
+                    final updated = await context.push<bool>(
+                      '/edit-product/${product.id}',
+                    );
+                    
+                    if (updated == true && context.mounted) {
+                      await context
+                      .read<ProductDetailsCubit>()
+                      .loadProduct(productId);
+                    }
+                  },
               icon: const Icon(Icons.edit_outlined),
               label: const Text('Edit Product'),
             ),
@@ -247,175 +266,6 @@ class _ProductDetailsContent extends StatelessWidget {
           ),
       ],
     );
-  }
-
-  Future<void> _showEditDialog(
-    BuildContext context,
-    Product product,
-  ) async {
-    final nameController = TextEditingController(text: product.name);
-    final quantityController = TextEditingController(
-      text: product.quantity.toString(),
-    );
-    final barcodeController = TextEditingController(
-      text: product.barcode ?? '',
-    );
-    final notesController = TextEditingController(
-      text: product.notes ?? '',
-    );
-
-    var category = product.category;
-    var expiryDate = product.expiryDate;
-
-    final formKey = GlobalKey<FormState>();
-    final cubit = context.read<ProductDetailsCubit>();
-
-    await showDialog<void>(
-      context: context,
-      builder: (dialogContext) {
-        return StatefulBuilder(
-          builder: (context, setDialogState) {
-            return AlertDialog(
-              title: const Text('Edit Product'),
-              content: SingleChildScrollView(
-                child: Form(
-                  key: formKey,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextFormField(
-                        controller: nameController,
-                        decoration: const InputDecoration(
-                          labelText: 'Product name',
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) =>
-                            value == null || value.trim().isEmpty
-                                ? 'Enter a product name'
-                                : null,
-                      ),
-                      const SizedBox(height: 12),
-                      DropdownButtonFormField<String>(
-                        value: category,
-                        decoration: const InputDecoration(
-                          labelText: 'Category',
-                          border: OutlineInputBorder(),
-                        ),
-                        items: const [
-                          'Food',
-                          'Beverage',
-                          'Medicine',
-                          'Personal Care',
-                          'Household',
-                          'Other',
-                        ]
-                            .map(
-                              (value) => DropdownMenuItem(
-                                value: value,
-                                child: Text(value),
-                              ),
-                            )
-                            .toList(),
-                        onChanged: (value) {
-                          if (value != null) {
-                            setDialogState(() => category = value);
-                          }
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                      TextFormField(
-                        controller: quantityController,
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          labelText: 'Quantity',
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          final quantity = int.tryParse(value ?? '');
-                          if (quantity == null || quantity < 1) {
-                            return 'Enter a quantity of at least 1';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: OutlinedButton.icon(
-                          onPressed: () async {
-                            final selectedDate = await showDatePicker(
-                              context: context,
-                              initialDate: expiryDate,
-                              firstDate: DateTime(2000),
-                              lastDate: DateTime(2100),
-                            );
-
-                            if (selectedDate != null) {
-                              setDialogState(
-                                () => expiryDate = selectedDate,
-                              );
-                            }
-                          },
-                          icon: const Icon(Icons.calendar_month),
-                          label: Text(
-                            'Expiry: ${ExpiryDateUtils.formatDate(expiryDate)}',
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      TextFormField(
-                        controller: barcodeController,
-                        decoration: const InputDecoration(
-                          labelText: 'Barcode (optional)',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      TextFormField(
-                        controller: notesController,
-                        maxLines: 3,
-                        decoration: const InputDecoration(
-                          labelText: 'Notes (optional)',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(dialogContext),
-                  child: const Text('Cancel'),
-                ),
-                FilledButton(
-                  onPressed: () async {
-                    if (!formKey.currentState!.validate()) return;
-
-                    Navigator.pop(dialogContext);
-
-                    await cubit.updateProduct(
-                      name: nameController.text,
-                      category: category,
-                      quantity: int.parse(quantityController.text),
-                      expiryDate: expiryDate,
-                      barcode: barcodeController.text,
-                      notes: notesController.text,
-                    );
-                  },
-                  child: const Text('Save'),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-
-    nameController.dispose();
-    quantityController.dispose();
-    barcodeController.dispose();
-    notesController.dispose();
   }
 
   Future<void> _confirmDelete(BuildContext context) async {
@@ -445,16 +295,47 @@ class _ProductDetailsContent extends StatelessWidget {
   }
 }
 
+class _LabeledField extends StatelessWidget {
+  const _LabeledField({
+    required this.label,
+    required this.child,
+  });
+
+  final String label;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF2E7D5B),
+          ),
+        ),
+        const SizedBox(height: 6),
+        child,
+      ],
+    );
+  }
+}
+
 class _DetailRow extends StatelessWidget {
   const _DetailRow({
     required this.icon,
     required this.label,
-    required this.value,
+    required this.value, 
+    required this.color,
   });
 
   final IconData icon;
   final String label;
   final String value;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -465,7 +346,7 @@ class _DetailRow extends StatelessWidget {
         children: [
           Icon(
             icon,
-            color: Theme.of(context).colorScheme.primary,
+            color: const Color(0xFF2E7D5B),
           ),
           const SizedBox(width: 12),
           Expanded(
